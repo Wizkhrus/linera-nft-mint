@@ -1,7 +1,11 @@
 'use client';
-
 import { useState } from 'react';
 import { useWallet } from './WalletProvider';
+
+// T-Rex NFT metadata with base64 encoded image
+const TREX_NFT_NAME = 'Red & White T-Rex';
+const TREX_NFT_DESCRIPTION = 'A retro pixel art T-Rex in vibrant red and white';
+const TREX_IMAGE_BASE64 = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNTAwIiBoZWlnaHQ9IjUwMCIgdmlld0JveD0iMCAwIDUwMCA1MDAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGRlZnM+PHN0eWxlPi5waXhlbCB7IGZpbGw6IHJlZDsgfSAucGl4ZWwtYmxhY2sgeyBmaWxsOiBibGFjazsgfSAucGl4ZWwtd2hpdGUgeyBmaWxsOiB3aGl0ZTsgfTwvc3R5bGU+PC9kZWZzPjxyZWN0IHdpZHRoPSI1MDAiIGhlaWdodD0iNTAwIiBmaWxsPSIjMjIyIi8+PHRleHQgeD0iNTAiIHk9IjUwIiBmb250LXNpemU9IjMwIiBmaWxsPSJ3aGl0ZSI+UGl4ZWwgVDEtUmV4PC90ZXh0Pjwvc3ZnPg==';
 
 export default function MintComponent() {
   const { connected, address, connect, disconnect } = useWallet();
@@ -19,10 +23,31 @@ export default function MintComponent() {
     setMessage('Minting NFT...');
 
     try {
+      // Generate unique NFT name
+      const tokenId = Math.floor(Math.random() * 10000);
+      const nftName = `${TREX_NFT_NAME} #${tokenId}`;
+      
+      // Create metadata URI with image
+      const metadata = {
+        name: nftName,
+        description: TREX_NFT_DESCRIPTION,
+        image: TREX_IMAGE_BASE64,
+        attributes: [
+          { trait_type: 'Type', value: 'Pixel Art' },
+          { trait_type: 'Colors', value: 'Red & White' }
+        ]
+      };
+      
+      const metadataUri = 'data:application/json;base64,' + btoa(JSON.stringify(metadata))(JSON.stringify(metadata)).toString('base64');
+
       const response = await fetch('/api/mint', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ address }),
+        body: JSON.stringify({
+          to: address,
+          name: nftName,
+          uri: metadataUri
+        }),
       });
 
       const data = await response.json();
@@ -75,7 +100,17 @@ export default function MintComponent() {
                   {address}
                 </p>
               </div>
-
+              <div className="bg-yellow-50 border border-yellow-200 p-4 rounded-lg text-sm">
+                <p className="font-semibold text-yellow-800 mb-2">🎨 NFT Preview</p>
+                <div className="flex items-center gap-4">
+                  <img src={TREX_IMAGE_BASE64} alt="T-Rex" className="w-32 h-32 bg-black rounded" />
+                  <div>
+                    <p className="font-bold text-gray-800">{TREX_NFT_NAME}</p>
+                    <p className="text-gray-600 text-xs mt-2">{TREX_NFT_DESCRIPTION}</p>
+                    <p className="text-gray-500 text-xs mt-3">Unique pixel art token for your collection</p>
+                  </div>
+                </div>
+              </div>
               <button
                 onClick={handleMint}
                 disabled={loading}
@@ -83,7 +118,6 @@ export default function MintComponent() {
               >
                 {loading ? '⏳ Minting...' : '✨ Mint Free NFT'}
               </button>
-
               {message && (
                 <div className={`p-4 rounded-lg ${
                   message.includes('Error') ? 'bg-red-100 text-red-700' : 'bg-green-100 text-green-700'
@@ -91,14 +125,12 @@ export default function MintComponent() {
                   {message}
                 </div>
               )}
-
               {txHash && (
                 <div className="bg-blue-50 p-4 rounded-lg">
                   <p className="text-sm text-gray-600">📝 Transaction Hash:</p>
                   <p className="font-mono text-sm break-all text-blue-600 font-bold">{txHash}</p>
                 </div>
               )}
-
               <button
                 onClick={handleDisconnect}
                 className="w-full bg-gray-600 hover:bg-gray-700 text-white font-bold py-3 px-6 rounded-lg transition"
@@ -113,7 +145,7 @@ export default function MintComponent() {
           <h2 className="text-lg font-semibold text-gray-800 mb-4">📖 How it works:</h2>
           <ol className="list-decimal list-inside space-y-2 text-gray-700 text-sm">
             <li>Connect your Ethereum wallet or use demo mode</li>
-            <li>Click "Mint Free NFT" to create an NFT on Linera</li>
+            <li>Click "Mint Free NFT" to create a T-Rex NFT on Linera</li>
             <li>The NFT will be minted to your connected wallet address</li>
             <li>View your transaction hash to verify on the Linera explorer</li>
           </ol>
