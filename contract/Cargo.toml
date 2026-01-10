@@ -1,0 +1,23 @@
+[package]
+name = "linera-nft-contract"
+version = "0.1.0"
+edition = "2021"
+publish = false
+
+[dependencies]
+linera-sdk = { version = "0.9", features = ["macros"] }
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+
+[lib]
+name = "linera_nft_contract"
+crate-type = ["cdylib"]
+
+[[bin]]
+name = "linera-nft-contract-service"
+path = "src/bin/service.rs"
+
+[profile.release]
+opt-level = "z"
+lto = true
+strip = true
