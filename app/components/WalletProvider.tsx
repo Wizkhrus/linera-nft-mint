@@ -2,6 +2,16 @@
 
 import React, { createContext, useContext, useState, useEffect } from 'react';
 
+interface EthereumProvider {
+  request: (args: { method: string; params?: unknown[] }) => Promise<unknown>;
+}
+
+declare global {
+  interface Window {
+    ethereum?: EthereumProvider;
+  }
+}
+
 interface WalletContextType {
   address: string | null;
   isConnected: boolean;
@@ -16,15 +26,13 @@ export function WalletProvider({ children }: { children: React.ReactNode }) {
   const [isConnected, setIsConnected] = useState(false);
 
   useEffect(() => {
-    // Check if wallet is already connected
     const checkWallet = () => {
       if (typeof window !== 'undefined' && window.ethereum) {
-        // Get connected accounts
         window.ethereum
           .request({ method: 'eth_accounts' })
-          .then((accounts: string[]) => {
-            if (accounts.length > 0) {
-              setAddress(accounts[0]);
+          .then((accounts: unknown) => {
+            if (Array.isArray(accounts) && accounts.length > 0) {
+              setAddress(String(accounts[0]));
               setIsConnected(true);
             }
           })
@@ -43,8 +51,8 @@ export function WalletProvider({ children }: { children: React.ReactNode }) {
         const accounts = await window.ethereum.request({
           method: 'eth_requestAccounts',
         });
-        if (accounts && accounts.length > 0) {
-          setAddress(accounts[0]);
+        if (Array.isArray(accounts) && accounts.length > 0) {
+          setAddress(String(accounts[0]));
           setIsConnected(true);
         }
       }
