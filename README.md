@@ -1,247 +1,224 @@
-# Linera NFT Mint Platform - Fullstack
+# Linera NFT Hub - Real-Time NFT Ecosystem
 
-🚀 **Полнофункциональный fullstack проект для минта NFT на блокчейне Linera**
+🚀 **Real-Time NFT Trading, Prediction Markets, and Interactive Creator on Linera Microchains**
 
-## 🏗️ Архитектура
+## 🎯 Features
+
+### 1. **Real-Time NFT Market** 💰
+- Live auction system with real-time price updates
+- Place bids on NFTs powered by Linera microchains
+- Instant settlement and transaction finality
+- Live price feed showing market movements every 2 seconds
+- Browse available NFTs with detailed information
+
+### 2. **Prediction Market** 🎯
+- Bet on cryptocurrency and NFT predictions
+- Real-time odds updates
+- Calculate potential winnings instantly
+- Multiple prediction categories (Crypto, Tech, Markets, NFT)
+- Live volume tracking
+
+### 3. **Interactive NFT Creator** 🎨
+- Design custom NFTs with real-time preview
+- Choose from 5 colors and 5 shapes
+- Customize NFT name and metadata
+- Mint NFTs instantly to Linera testnet
+- Real-time minting feedback
+
+### 4. **Basic NFT Minting** ✨
+- One-click free NFT minting
+- Wallet integration
+- Transaction tracking with Linera explorer links
+
+## 🏗️ Architecture
 
 ```
 ┌─────────────────────────────────────────────┐
-│   Frontend (Next.js) - Vercel              │
-│   https://linera-nft-mint.vercel.app       │
-│   - React компоненты                       │
-│   - Подключение кошелька                   │
-│   - UI для минта NFT                       │
-└─────────────────┬───────────────────────────┘
-                  │ API calls
-                  ↓
-┌─────────────────────────────────────────────┐
-Backend (Next.js API Routes) - Vercel
-  - /api/mint - POST/GET requests
-  - Integrated with frontend
-  - Deployed on Vercel└─────────────────┬───────────────────────────┘
-                  │ Linera SDK calls
-                  ↓
-┌─────────────────────────────────────────────┐
-│   Smart Contract (Rust) - Linera Chain    │
-│   - MintNft { to, name, uri }              │
-│   - GetNft { id }                          │
-│   - GetTotalSupply                         │
+│        Frontend (Next.js + React)           │
+│  - Modern Tailwind CSS UI                   │
+│  - Real-time state management               │
+│  - Responsive design                        │
+└────────────┬────────────────────────────────┘
+             │
+┌────────────▼────────────────────────────────┐
+│     API Layer (Next.js API Routes)          │
+│  - /api/mint - NFT minting                  │
+│  - Real-time data processing                │
+└────────────┬────────────────────────────────┘
+             │
+┌────────────▼────────────────────────────────┐
+│   Linera Blockchain & Microchains           │
+│  - Instant transaction finality              │
+│  - Real-time state updates                   │
+│  - Microchain-based NFT ownership            │
 └─────────────────────────────────────────────┘
 ```
 
-## 📁 Структура проекта
+## 🛠️ Tech Stack
 
-```
-.
-├── app/                     # Frontend (Next.js)
-│   ├── components/
-│   │   └── MintComponent.tsx  # React компонент минта
-│   ├── page.tsx               # Главная страница
-│   ├── layout.tsx
-│   └── globals.css
-│
-├── backend/                 # Backend API (Node.js)
-│   ├── server.js             # Express сервер
-│   ├── package.json
-│   └── .env.example
-│
-├── contract/                # Rust контракт
-│   ├── src/
-│   │   ├── lib.rs            # Основная логика NFT
-│   │   └── bin/service.rs    # Service для API
-│   ├── Cargo.toml
-│   └── README.md
-│
-├── package.json             # Frontend зависимости
-├── tsconfig.json
-├── next.config.js
-└── README.md
-```
+- **Frontend**: Next.js 14, React 18, TypeScript
+- **Styling**: Tailwind CSS 3.3, PostCSS
+- **Components**: Custom React components, Lucide React icons
+- **Blockchain**: Linera SDK (testnet integration)
+- **Deployment**: Vercel
+- **State Management**: React hooks (useState, useEffect, useContext)
 
-## 🚀 Быстрый старт
+## 📦 Installation & Setup
 
-### 1️⃣ Frontend (Next.js + Vercel)
+### Prerequisites
+- Node.js 18+
+- npm or yarn
+- Linera wallet (for testnet)
+
+### Development
 
 ```bash
-npm install
-npm run dev
-# Откроется на http://localhost:3000
-```
-
-Автоматический деплой на Vercel: https://linera-nft-mint.vercel.app
-
-### 2️⃣ Backend (Node.js + Express)
-
-```bash
-cd backend
-
-# Скопировать .env файл
-cp .env.example .env
-
-# Установить зависимости
-npm install
-
-# Запустить dev сервер
-npm run dev
-# Server запустится на http://localhost:3001
-
-# Для production
-NODE_ENV=production npm start
-```
-
-**API Endpoints:**
-```
-POST   /api/mint         - Mint new NFT
-GET    /api/nft/:id      - Get NFT by ID
-GET    /api/nfts         - Get all NFTs
-GET    /api/stats        - Get stats
-GET    /health           - Health check
-```
-
-### 3️⃣ Smart Contract (Rust)
-
-См. `/contract/README.md` для полных инструкций
-
-```bash
-cd contract
-
-# Установить Rust и Linera
-curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
-cargo install linera-cli
-rustup target add wasm32-unknown-unknown
-
-# Скомпилировать
-cargo build --target wasm32-unknown-unknown --release
-
-# Развернуть
-linera publish-contract \
-  target/wasm32-unknown-unknown/release/linera_nft_contract.wasm \
-  --service target/wasm32-unknown-unknown/release/linera_nft_contract_service.wasm
-```
-
-## 🔄 Как это работает
-
-1. **Пользователь** открывает фронтенд на Vercel
-2. **Фронтенд** отправляет запрос к Backend API (POST /api/mint)
-3. **Backend** обрабатывает запрос и вызывает Linera контракт
-4. **Контракт** создает NFT и сохраняет в цепи
-5. **Результат** возвращается пользователю
-
-## 🛠️ Стек технологий
-
-| Слой | Технология | Версия |
-|------|-----------|--------|
-| Frontend | Next.js | 14.0 |
-| Frontend | React | 18.2 |
-| Frontend | TypeScript | 5.0 |
-| Backend | Node.js | 18+ |
-| Backend | Express | 4.18 |
-| Backend | Axios | 1.4 |
-| Contract | Rust | 2021 |
-| Contract | Linera SDK | 0.9 |
-
-## 📦 Деплой
-
-### Frontend → Vercel ✅
-Автоматический деплой при push в main
-
-### Backend → Railway (или Render)
-```bash
-# Railway
-railway up
-
-# или Render
-# Подключить GitHub репо через Render UI
-```
-
-### Contract → Linera Testnet
-Полные инструкции в `/contract/README.md`
-
-## 📚 Полезные ссылки
-
-- [Linera Documentation](https://linera.dev)
-- [Next.js Docs](https://nextjs.org)
-- [Express.js Guide](https://expressjs.com)
-- [Rust Book](https://doc.rust-lang.org/book)
-- [Vercel Dashboard](https://vercel.com/wizkhrus-projects/linera-nft-mint)
-
-## 🤝 Контрибьютинг
-
-Отправляй PR и создавай Issues!
-
-## 📄 Лицензия
-
-MIT - свободно используй в своих проектах
-
----
-
-## 🔐 Wallet Setup with Dynamic
-
-This project uses [Dynamic](https://dynamic.xyz/) for secure wallet management and authentication on the Linera blockchain.
-
-### Getting Started
-
-1. **Create a Dynamic Account**
-   - Visit [Dynamic Dashboard](https://app.dynamic.xyz)
-   - Sign up for a free account
-   - Create a new project/environment for your dApp
-
-2. **Get Your Environment ID**
-   - Copy your `Environment ID` from the Dynamic dashboard
-   - This will be used to authenticate your application
-
-3. **Configure Environment Variables**
-   - Copy `.env.local.example` to `.env.local`
-   - Paste your Environment ID:
-   ```bash
-   NEXT_PUBLIC_DYNAMIC_ENVIRONMENT_ID=your_environment_id_here
-   ```
-
-4. **Deploy to Vercel**
-   - Add `NEXT_PUBLIC_DYNAMIC_ENVIRONMENT_ID` to Vercel project settings
-   - Environment → Environment Variables
-   - Redeploy your project
-
-### Supported Wallets
-
-Dynamic supports multiple wallet providers:
-- MetaMask
-- WalletConnect
-- Coinbase Wallet
-- Magic (Email/SMS login)
-- And 100+ more wallets
-
-### Minting NFTs
-
-1. Visit your deployed app: https://linera-nft-mint.vercel.app
-2. Click "Connect Wallet"
-3. Choose your preferred wallet or login method
-4. Click "Mint Free NFT"
-5. Approve the transaction in your wallet
-6. Celebrate! 🎉 Your NFT has been minted
-
-### Testing Locally
-
-```bash
-# Clone the repository
+# Clone repository
 git clone https://github.com/Wizkhrus/linera-nft-mint.git
 cd linera-nft-mint
 
 # Install dependencies
 npm install
 
-# Copy environment file
+# Create environment file
 cp .env.local.example .env.local
-# Edit .env.local with your Dynamic Environment ID
 
-# Run development server
+# Start development server
 npm run dev
-
-# Open http://localhost:3000
 ```
 
-### Advanced Configuration
+Visit `http://localhost:3000`
 
-For custom wallet configurations or advanced options, see the [Dynamic Documentation](https://docs.dynamic.xyz).
+### Build & Deploy
 
-**Вопросы?** Смотри README.md в каждой папке (app, backend, contract) для деталей.
+```bash
+# Build for production
+npm run build
+
+# Start production server
+npm run start
+```
+
+## 🚀 Deployment on Vercel
+
+The application is automatically deployed to Vercel on each push to main:
+
+**Live URL**: https://linera-nft-mint.vercel.app
+
+1. Connect your GitHub repo to Vercel
+2. Vercel will automatically build and deploy on push
+3. Environment variables are configured in Vercel dashboard
+4. Each deployment gets a unique preview URL
+
+## 🔗 Linera Integration
+
+### Testnet Configuration
+The application connects to Linera Testnet Conway:
+- **Network**: Linera Testnet Conway
+- **Chain ID**: Configurable via environment variables
+- **RPC Endpoint**: Community RPC nodes
+
+### Smart Contracts
+- NFT contract: Handles minting and ownership
+- Market contract: Manages auction bids and settlements
+- Prediction contract: Tracks bets and payouts
+
+## 📊 API Endpoints
+
+### POST /api/mint
+Mints an NFT to the user's wallet
+
+**Request**:
+```json
+{
+  "name": "My Linera NFT",
+  "to": "0x...",
+  "uri": "ipfs://...",
+  "color": "#FF6B6B"
+}
+```
+
+**Response**:
+```json
+{
+  "success": true,
+  "transactionHash": "0x...",
+  "explorerLink": "https://explorer.linera.io/tx/0x...",
+  "owner": "0x..."
+}
+```
+
+## 🎮 Usage Guide
+
+### Mint NFT
+1. Connect your Linera wallet
+2. Go to **Mint** tab
+3. Click "Mint Free NFT"
+4. Confirm in your wallet
+5. Track transaction on explorer
+
+### Trade in Market
+1. Go to **Market** tab
+2. Browse available NFTs
+3. Click "Place Bid" on desired NFT
+4. Enter bid amount
+5. Confirm transaction
+
+### Make Predictions
+1. Go to **Predict** tab
+2. Choose prediction (YES or NO)
+3. Enter bet amount
+4. View potential winnings
+5. Confirm bet
+
+### Create Custom NFT
+1. Go to **Create** tab
+2. Select color and shape
+3. Name your NFT
+4. Preview in real-time
+5. Mint to blockchain
+
+## 📈 Real-Time Features
+
+- **Live Price Updates**: Market prices refresh every 2 seconds
+- **Live Odds**: Prediction market odds update in real-time
+- **Instant Feedback**: UI responds immediately to user actions
+- **WebSocket Integration**: Real-time data streaming
+- **Responsive Design**: Works on mobile, tablet, desktop
+
+## 🔐 Security
+
+- Only unsigned transactions (user signs in wallet)
+- No private keys stored on server
+- CORS enabled for legitimate requests
+- Rate limiting on API endpoints
+- Environment variables for sensitive data
+
+## 📝 License
+
+MIT License - Free to use and modify
+
+## 🤝 Contributing
+
+Contributions welcome! Please:
+1. Fork the repository
+2. Create feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit changes (`git commit -m 'Add amazing feature'`)
+4. Push to branch (`git push origin feature/amazing-feature`)
+5. Open Pull Request
+
+## 📞 Support
+
+- GitHub Issues: [Report bugs](https://github.com/Wizkhrus/linera-nft-mint/issues)
+- Discord: [Linera Community](https://discord.gg/linera)
+- Twitter: [@linera_io](https://twitter.com/linera_io)
+
+## 🎓 Learn More
+
+- [Linera Documentation](https://linera.dev)
+- [Linera GitHub](https://github.com/linera-io/linera-protocol)
+- [Buildathon Info](https://app.akindo.io/wave-hacks/X4ZV12Z6GSMEkmOkX)
+
+---
+
+**Built with ⚡ for the Linera Buildathon Wave 5**
