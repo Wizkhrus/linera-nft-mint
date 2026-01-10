@@ -12,10 +12,6 @@
     "next": "^14.0.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "@dynamic-labs/sdk-react-core": "^21.0.0",
-    "@dynamic-labs/ethereum": "^21.0.0",
-    "@linera/client": "^0.11.0",
-    "ethers": "^6.0.0"
   },
   "devDependencies": {
     "typescript": "^5.0.0",
