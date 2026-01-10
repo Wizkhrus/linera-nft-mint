@@ -38,8 +38,7 @@ export default function MintComponent() {
         ]
       };
       
-      const metadataUri = 'data:application/json;base64,' + btoa(JSON.stringify(metadata))(JSON.stringify(metadata)).toString('base64');
-
+      const metadataUri = 'data:application/json;base64,' + btoa(JSON.stringify(metadata));
       const response = await fetch('/api/mint', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
