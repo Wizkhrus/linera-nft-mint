@@ -222,3 +222,10 @@ Contributions welcome! Please:
 ---
 
 **Built with ⚡ for the Linera Buildathon Wave 5**
+
+
+---
+
+**⚡ Status**: Deployed with 4-tab UI interface (Mint, Market, Predict, Create)
+**Version**: 2.0
+**Last Updated**: Jan 11, 2026
