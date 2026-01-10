@@ -15,13 +15,10 @@
                   │ API calls
                   ↓
 ┌─────────────────────────────────────────────┐
-│   Backend (Node.js + Express) - Railway    │
-│   localhost:3001 (dev)                     │
-│   - POST /api/mint - минт NFT              │
-│   - GET /api/nft/:id - получить NFT       │
-│   - GET /api/nfts - все NFT                │
-│   - GET /api/stats - статистика            │
-└─────────────────┬───────────────────────────┘
+Backend (Next.js API Routes) - Vercel
+  - /api/mint - POST/GET requests
+  - Integrated with frontend
+  - Deployed on Vercel└─────────────────┬───────────────────────────┘
                   │ Linera SDK calls
                   ↓
 ┌─────────────────────────────────────────────┐
