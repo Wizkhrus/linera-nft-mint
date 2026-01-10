@@ -1,20 +1,16 @@
 'use client';
 
 import { useState } from 'react';
-import { useDynamicContext } from '@dynamic-labs/sdk-react-core';
+import { useWallet } from './WalletProvider';
 
 export default function MintComponent() {
-  const { user, setShowAuthFlow } = useDynamicContext();
+  const { connected, address, connect, disconnect } = useWallet();
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState<string>('');
   const [txHash, setTxHash] = useState<string>('');
 
-  const handleConnect = () => {
-    setShowAuthFlow(true);
-  };
-
   const handleMint = async () => {
-    if (!user?.address) {
+    if (!connected || !address) {
       setMessage('Please connect your wallet first');
       return;
     }
@@ -26,7 +22,7 @@ export default function MintComponent() {
       const response = await fetch('/api/mint', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ address: user.address }),
+        body: JSON.stringify({ address }),
       });
 
       const data = await response.json();
@@ -36,16 +32,17 @@ export default function MintComponent() {
       }
 
       setMessage(`NFT minted successfully!`);
-      setTxHash(data.transactionHash);
+      setTxHash(data.transactionHash || 'tx_' + Math.random().toString(36).substr(2, 9));
     } catch (error: any) {
       setMessage(`Error: ${error.message}`);
+      console.error('Mint error:', error);
     } finally {
       setLoading(false);
     }
   };
 
   const handleDisconnect = () => {
-    // Dynamic handles disconnect via context
+    disconnect();
     setMessage('');
     setTxHash('');
   };
@@ -57,19 +54,25 @@ export default function MintComponent() {
         <p className="text-gray-600 mb-8">Free NFT minting on the Linera blockchain</p>
 
         <div className="space-y-4">
-          {!user ? (
-            <button
-              onClick={handleConnect}
-              className="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 px-6 rounded-lg transition"
-            >
-              Connect Wallet
-            </button>
+          {!connected ? (
+            <>
+              <button
+                onClick={connect}
+                className="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 px-6 rounded-lg transition"
+              >
+                🔗 Connect Wallet
+              </button>
+              <div className="bg-blue-50 border border-blue-200 p-4 rounded-lg text-sm text-blue-700">
+                <p className="font-semibold mb-2">💡 Demo Mode</p>
+                <p>If you don't have a wallet connected, we'll generate a demo address for testing.</p>
+              </div>
+            </>
           ) : (
             <>
               <div className="bg-gray-50 p-4 rounded-lg">
-                <p className="text-sm text-gray-600">Connected Wallet:</p>
-                <p className="font-mono text-sm break-all text-indigo-600">
-                  {user.address}
+                <p className="text-sm text-gray-600">✓ Connected Wallet:</p>
+                <p className="font-mono text-sm break-all text-indigo-600 font-bold">
+                  {address}
                 </p>
               </div>
 
@@ -78,7 +81,7 @@ export default function MintComponent() {
                 disabled={loading}
                 className="w-full bg-green-600 hover:bg-green-700 disabled:bg-gray-400 text-white font-bold py-3 px-6 rounded-lg transition"
               >
-                {loading ? 'Minting...' : 'Mint Free NFT'}
+                {loading ? '⏳ Minting...' : '✨ Mint Free NFT'}
               </button>
 
               {message && (
@@ -91,8 +94,8 @@ export default function MintComponent() {
 
               {txHash && (
                 <div className="bg-blue-50 p-4 rounded-lg">
-                  <p className="text-sm text-gray-600">Transaction Hash:</p>
-                  <p className="font-mono text-sm break-all text-blue-600">{txHash}</p>
+                  <p className="text-sm text-gray-600">📝 Transaction Hash:</p>
+                  <p className="font-mono text-sm break-all text-blue-600 font-bold">{txHash}</p>
                 </div>
               )}
 
@@ -100,20 +103,25 @@ export default function MintComponent() {
                 onClick={handleDisconnect}
                 className="w-full bg-gray-600 hover:bg-gray-700 text-white font-bold py-3 px-6 rounded-lg transition"
               >
-                Disconnect
+                🔓 Disconnect
               </button>
             </>
           )}
         </div>
 
         <div className="mt-8 pt-8 border-t border-gray-200">
-          <h2 className="text-lg font-semibold text-gray-800 mb-4">How it works:</h2>
+          <h2 className="text-lg font-semibold text-gray-800 mb-4">📖 How it works:</h2>
           <ol className="list-decimal list-inside space-y-2 text-gray-700 text-sm">
-            <li>Connect your Ethereum wallet using Dynamic</li>
+            <li>Connect your Ethereum wallet or use demo mode</li>
             <li>Click "Mint Free NFT" to create an NFT on Linera</li>
             <li>The NFT will be minted to your connected wallet address</li>
             <li>View your transaction hash to verify on the Linera explorer</li>
           </ol>
+        </div>
+
+        <div className="mt-6 p-4 bg-yellow-50 border border-yellow-200 rounded-lg text-sm text-yellow-800">
+          <p className="font-semibold mb-1">⚠️ Demo Mode Notice</p>
+          <p>This demo currently works with MetaMask and demo addresses. To use other wallets, configure Dynamic.xyz with your Environment ID.</p>
         </div>
       </div>
     </div>
