@@ -175,4 +175,73 @@ MIT - свободно используй в своих проектах
 
 ---
 
+## 🔐 Wallet Setup with Dynamic
+
+This project uses [Dynamic](https://dynamic.xyz/) for secure wallet management and authentication on the Linera blockchain.
+
+### Getting Started
+
+1. **Create a Dynamic Account**
+   - Visit [Dynamic Dashboard](https://app.dynamic.xyz)
+   - Sign up for a free account
+   - Create a new project/environment for your dApp
+
+2. **Get Your Environment ID**
+   - Copy your `Environment ID` from the Dynamic dashboard
+   - This will be used to authenticate your application
+
+3. **Configure Environment Variables**
+   - Copy `.env.local.example` to `.env.local`
+   - Paste your Environment ID:
+   ```bash
+   NEXT_PUBLIC_DYNAMIC_ENVIRONMENT_ID=your_environment_id_here
+   ```
+
+4. **Deploy to Vercel**
+   - Add `NEXT_PUBLIC_DYNAMIC_ENVIRONMENT_ID` to Vercel project settings
+   - Environment → Environment Variables
+   - Redeploy your project
+
+### Supported Wallets
+
+Dynamic supports multiple wallet providers:
+- MetaMask
+- WalletConnect
+- Coinbase Wallet
+- Magic (Email/SMS login)
+- And 100+ more wallets
+
+### Minting NFTs
+
+1. Visit your deployed app: https://linera-nft-mint.vercel.app
+2. Click "Connect Wallet"
+3. Choose your preferred wallet or login method
+4. Click "Mint Free NFT"
+5. Approve the transaction in your wallet
+6. Celebrate! 🎉 Your NFT has been minted
+
+### Testing Locally
+
+```bash
+# Clone the repository
+git clone https://github.com/Wizkhrus/linera-nft-mint.git
+cd linera-nft-mint
+
+# Install dependencies
+npm install
+
+# Copy environment file
+cp .env.local.example .env.local
+# Edit .env.local with your Dynamic Environment ID
+
+# Run development server
+npm run dev
+
+# Open http://localhost:3000
+```
+
+### Advanced Configuration
+
+For custom wallet configurations or advanced options, see the [Dynamic Documentation](https://docs.dynamic.xyz).
+
 **Вопросы?** Смотри README.md в каждой папке (app, backend, contract) для деталей.
