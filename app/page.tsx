@@ -1,11 +1,12 @@
 'use client';
 
 import { useState } from 'react';
-import MintComponent from './components/MintComponent';
 
 export default function Home() {
   const [walletConnected, setWalletConnected] = useState(false);
   const [activeTab, setActiveTab] = useState('mint');
+  const [nftName, setNftName] = useState('My NFT');
+  const [selectedColor, setSelectedColor] = useState('#ff0000');
 
   return (
     <main className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900">
@@ -34,111 +35,130 @@ export default function Home() {
 
       {/* Content */}
       <div className="pt-24 pb-12 container mx-auto px-4">
-        {/* Hero Section */}
+        {/* Hero */}
         <div className="mb-12 text-center">
           <h2 className="text-5xl font-bold bg-gradient-to-r from-cyan-400 via-blue-400 to-purple-400 bg-clip-text text-transparent mb-4">
             Real-Time NFT Trading & Creation
           </h2>
-          <p className="text-lg text-slate-300 mb-8">Experience instant microchain-powered NFT interactions</p>
+          <p className="text-lg text-slate-300 mb-8">Instant microchain-powered NFT interactions</p>
         </div>
 
-        {/* Tab Navigation */}
-        <div className="mb-8 flex justify-center gap-4">
-          {[
-            { id: 'mint', label: '🎨 Mint', icon: '🎨' },
-            { id: 'market', label: '📊 Market', icon: '📊' },
-            { id: 'predict', label: '🎯 Predict', icon: '🎯' },
-            { id: 'create', label: '🎮 Create', icon: '🎮' },
-          ].map((tab) => (
+        {/* Tabs */}
+        <div className="mb-8 flex justify-center gap-4 flex-wrap">
+          {['mint', 'market', 'predict', 'create'].map((tab) => (
             <button
-              key={tab.id}
-              onClick={() => setActiveTab(tab.id)}
+              key={tab}
+              onClick={() => setActiveTab(tab)}
               className={`px-6 py-2 rounded-lg font-medium transition-all ${
-                activeTab === tab.id
+                activeTab === tab
                   ? 'bg-gradient-to-r from-cyan-500 to-blue-600 text-white'
                   : 'bg-slate-800/50 text-slate-300 hover:text-white'
               }`}
             >
-              {tab.label}
+              {tab === 'mint' && '🎨 Mint'}
+              {tab === 'market' && '📊 Market'}
+              {tab === 'predict' && '🎯 Predict'}
+              {tab === 'create' && '🎮 Create'}
             </button>
           ))}
         </div>
 
-        {/* Mint Tab Content */}
+        {/* Mint Tab */}
         {activeTab === 'mint' && (
           <div className="bg-gradient-to-br from-slate-800/50 to-slate-900/50 backdrop-blur border border-slate-700/50 rounded-2xl p-8 max-w-2xl mx-auto">
-            <MintComponent isConnected={walletConnected} />
+            <h3 className="text-3xl font-bold text-white mb-6">🎨 Free NFT Minting</h3>
+            <div className="space-y-4">
+              <div className="bg-slate-600/50 p-8 rounded-lg text-center mb-4">
+                <p className="text-white text-lg font-bold">T-Rex NFT</p>
+                <p className="text-cyan-400 text-sm mt-2">Ready to Mint!</p>
+              </div>
+              <button className="w-full px-4 py-3 bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-white rounded-lg font-bold text-lg transition-all transform hover:scale-105">
+                {walletConnected ? 'Mint Free NFT' : 'Connect Wallet First'}
+              </button>
+              <p className="text-slate-400 text-sm text-center">
+                Free NFT minting on Linera blockchain • Instant delivery
+              </p>
+            </div>
           </div>
         )}
 
-        {/* Market Tab Content */}
+        {/* Market Tab */}
         {activeTab === 'market' && (
           <div className="bg-gradient-to-br from-slate-800/50 to-slate-900/50 backdrop-blur border border-slate-700/50 rounded-2xl p-8 max-w-2xl mx-auto">
-            <div className="text-center py-12">
-              <h3 className="text-3xl font-bold text-white mb-4">📊 NFT Market</h3>
-              <p className="text-slate-300">Real-time NFT trading with live price updates</p>
-              <div className="mt-8 grid grid-cols-1 gap-4">
-                {['Linera Genesis', 'T-Rex NFT', 'Blue Diamond'].map((nft, idx) => (
-                  <div key={idx} className="bg-slate-700/50 p-4 rounded-lg">
+            <h3 className="text-3xl font-bold text-white mb-6">📊 NFT Market</h3>
+            <div className="space-y-3">
+              {['Linera Genesis', 'T-Rex NFT', 'Blue Diamond', 'Cyber Punk'].map((nft, idx) => (
+                <div key={idx} className="bg-slate-700/50 p-4 rounded-lg flex justify-between items-center">
+                  <div>
                     <p className="font-semibold text-white">{nft}</p>
-                    <p className="text-cyan-400">Current Bid: 2.5 USDC</p>
+                    <p className="text-cyan-400 text-sm">Price: {2.5 + idx * 0.5} USDC</p>
                   </div>
-                ))}
-              </div>
-            </div>
-          </div>
-        )}
-
-        {/* Predict Tab Content */}
-        {activeTab === 'predict' && (
-          <div className="bg-gradient-to-br from-slate-800/50 to-slate-900/50 backdrop-blur border border-slate-700/50 rounded-2xl p-8 max-w-2xl mx-auto">
-            <div className="text-center py-12">
-              <h3 className="text-3xl font-bold text-white mb-4">🎯 Prediction Market</h3>
-              <p className="text-slate-300">Bet on NFT price movements</p>
-              <div className="mt-8 space-y-4">
-                {['Will NFT floor price go up?', 'Will trading volume increase?'].map((pred, idx) => (
-                  <div key={idx} className="bg-slate-700/50 p-4 rounded-lg">
-                    <p className="font-semibold text-white mb-2">{pred}</p>
-                    <div className="flex gap-2 justify-center">
-                      <button className="px-4 py-2 bg-green-600 hover:bg-green-500 text-white rounded">YES</button>
-                      <button className="px-4 py-2 bg-red-600 hover:bg-red-500 text-white rounded">NO</button>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </div>
-        )}
-
-        {/* Create Tab Content */}
-        {activeTab === 'create' && (
-          <div className="bg-gradient-to-br from-slate-800/50 to-slate-900/50 backdrop-blur border border-slate-700/50 rounded-2xl p-8 max-w-2xl mx-auto">
-            <div className="text-center py-12">
-              <h3 className="text-3xl font-bold text-white mb-4">🎮 NFT Creator</h3>
-              <p className="text-slate-300">Design custom NFTs with real-time preview</p>
-              <div className="mt-8">
-                <div className="bg-slate-600/50 p-12 rounded-lg mb-4">
-                  <p className="text-slate-400">NFT Preview Area</p>
-                </div>
-                <div className="space-y-4">
-                  <div>
-                    <label className="text-white text-sm">Choose Color:</label>
-                    <input type="color" className="w-full h-10 rounded cursor-pointer" />
-                  </div>
-                  <div>
-                    <label className="text-white text-sm">NFT Name:</label>
-                    <input type="text" placeholder="My NFT" className="w-full px-3 py-2 rounded bg-slate-700 text-white border border-slate-600" />
-                  </div>
-                  <button className="w-full px-4 py-2 bg-gradient-to-r from-cyan-500 to-blue-600 text-white rounded-lg font-medium hover:from-cyan-400 hover:to-blue-500">
-                    Create NFT
+                  <button className="px-4 py-2 bg-cyan-600 hover:bg-cyan-500 text-white rounded font-medium transition-all">
+                    Bid
                   </button>
                 </div>
-              </div>
+              ))}
             </div>
           </div>
         )}
 
-        {/* Stats Section */}
+        {/* Predict Tab */}
+        {activeTab === 'predict' && (
+          <div className="bg-gradient-to-br from-slate-800/50 to-slate-900/50 backdrop-blur border border-slate-700/50 rounded-2xl p-8 max-w-2xl mx-auto">
+            <h3 className="text-3xl font-bold text-white mb-6">🎯 Prediction Market</h3>
+            <div className="space-y-4">
+              {['Will NFT floor price go up?', 'Will trading volume increase?'].map((pred, idx) => (
+                <div key={idx} className="bg-slate-700/50 p-4 rounded-lg">
+                  <p className="font-semibold text-white mb-3">{pred}</p>
+                  <div className="flex gap-2">
+                    <button className="flex-1 px-4 py-2 bg-green-600 hover:bg-green-500 text-white rounded font-medium transition-all">
+                      YES (2.5x)
+                    </button>
+                    <button className="flex-1 px-4 py-2 bg-red-600 hover:bg-red-500 text-white rounded font-medium transition-all">
+                      NO (1.8x)
+                    </button>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* Create Tab */}
+        {activeTab === 'create' && (
+          <div className="bg-gradient-to-br from-slate-800/50 to-slate-900/50 backdrop-blur border border-slate-700/50 rounded-2xl p-8 max-w-2xl mx-auto">
+            <h3 className="text-3xl font-bold text-white mb-6">🎮 Create Custom NFT</h3>
+            <div className="space-y-4">
+              <div className="bg-slate-600/50 p-12 rounded-lg text-center" style={{ backgroundColor: selectedColor, opacity: 0.3 }}>
+                <p className="text-slate-300 font-bold text-lg">{nftName}</p>
+              </div>
+              <div>
+                <label className="text-white text-sm block mb-2">Choose Color:</label>
+                <input
+                  type="color"
+                  value={selectedColor}
+                  onChange={(e) => setSelectedColor(e.target.value)}
+                  className="w-full h-10 rounded cursor-pointer border border-slate-600"
+                />
+              </div>
+              <div>
+                <label className="text-white text-sm block mb-2">NFT Name:</label>
+                <input
+                  type="text"
+                  value={nftName}
+                  onChange={(e) => setNftName(e.target.value)}
+                  className="w-full px-3 py-2 rounded bg-slate-700 text-white border border-slate-600 focus:border-cyan-400 outline-none"
+                  placeholder="My NFT"
+                />
+              </div>
+              <button className="w-full px-4 py-3 bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-white rounded-lg font-bold transition-all transform hover:scale-105">
+                {walletConnected ? 'Create & Mint NFT' : 'Connect Wallet First'}
+              </button>
+            </div>
+          </div>
+        )}
+
+        {/* Stats */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mt-12">
           {[
             { label: 'Total Volume', value: '2.4K USDC', icon: '📈' },
