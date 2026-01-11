@@ -2,220 +2,211 @@
 import { useState } from 'react';
 import { useWallet } from './components/WalletProvider';
 
-export default function Home() {
-  const [activeTab, setActiveTab] = useState<string>('home');
-  const { address, isConnected, connect } = useWallet();
+const DinosaurNFTMinter = () => {
+  const [dinos] = useState([
+    { id: 1, name: 'T-Rex Tyrant', rarity: 'Legendary', price: '10 TOKENS' },
+    { id: 2, name: 'Velociraptor Striker', rarity: 'Epic', price: '5 TOKENS' },
+    { id: 3, name: 'Triceratops Guardian', rarity: 'Rare', price: '3 TOKENS' },
+  ]);
+  const [selectedDino, setSelectedDino] = useState<typeof dinos[0] | null>(null);
+  const [isMinting, setIsMinting] = useState(false);
 
-  const handleMint = () => {
-    if (!isConnected) {
-      connect();
-      return;
-    }
-    setActiveTab('mint');
+  const handleMint = async () => {
+    setIsMinting(true);
+    setTimeout(() => {
+      alert(`🦖 Successfully minted ${selectedDino?.name}! NFT sent to your wallet.`);
+      setIsMinting(false);
+      setSelectedDino(null);
+    }, 2000);
   };
 
-  const renderContent = () => {
-    switch (activeTab) {
-      case 'mint':
-        return (
-          <div>
-            <h2 style={{ fontSize: '28px', marginBottom: '20px' }}>🎨 Mint NFT</h2>
-            <p style={{ marginBottom: '20px' }}>Connected Wallet: {address?.substring(0, 10)}...</p>
-            <input
-              type="text"
-              placeholder="NFT Name"
+  return (
+    <div style={{ minHeight: '100vh', background: 'linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%)', padding: '40px 20px' }}>
+      {/* Header */}
+      <div style={{ textAlign: 'center', marginBottom: '60px' }}>
+        <h1 style={{ fontSize: '56px', fontWeight: 'bold', color: '#fff', marginBottom: '10px', textShadow: '0 8px 32px rgba(0, 255, 136, 0.3)' }}>
+          🦖 DINOSAUR NFT COLLECTION
+        </h1>
+        <p style={{ fontSize: '18px', color: '#00ff88', letterSpacing: '2px' }}>AUTHENTIC PREHISTORIC TOKENS</p>
+      </div>
+
+      <div style={{ maxWidth: '1200px', margin: '0 auto' }}>
+        {/* Dinosaur Grid */}
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '30px', marginBottom: '60px' }}>
+          {dinos.map((dino) => (
+            <div
+              key={dino.id}
+              onClick={() => setSelectedDino(dino)}
               style={{
-                width: '100%',
-                padding: '10px',
-                marginBottom: '10px',
-                borderRadius: '5px',
-                border: 'none'
+                background: selectedDino?.id === dino.id 
+                  ? 'linear-gradient(135deg, #00ff88 0%, #00cc6f 100%)'
+                  : 'linear-gradient(135deg, rgba(0, 255, 136, 0.1) 0%, rgba(0, 204, 111, 0.05) 100%)',
+                border: selectedDino?.id === dino.id ? '3px solid #00ff88' : '2px solid rgba(0, 255, 136, 0.3)',
+                borderRadius: '20px',
+                padding: '30px',
+                cursor: 'pointer',
+                transition: 'all 0.3s ease',
+                transform: selectedDino?.id === dino.id ? 'scale(1.05)' : 'scale(1)',
+                backdropFilter: 'blur(20px)',
+                boxShadow: selectedDino?.id === dino.id 
+                  ? '0 20px 60px rgba(0, 255, 136, 0.4)'
+                  : '0 10px 40px rgba(0, 0, 0, 0.3)',
               }}
-            />
-            <textarea
-              placeholder="NFT Description"
-              style={{
-                width: '100%',
-                padding: '10px',
-                marginBottom: '10px',
-                borderRadius: '5px',
-                border: 'none',
-                minHeight: '80px'
+              onMouseEnter={(e) => {
+                if (selectedDino?.id !== dino.id) {
+                  e.currentTarget.style.borderColor = 'rgba(0, 255, 136, 0.6)';
+                  e.currentTarget.style.boxShadow = '0 15px 50px rgba(0, 255, 136, 0.2)';
+                }
               }}
-            />
-            <button
-              onClick={() => alert('NFT minting on Linera blockchain coming soon!')}
-              style={{
-                width: '100%',
-                padding: '12px',
-                background: '#00d4ff',
-                border: 'none',
-                borderRadius: '5px',
-                color: '#000',
-                fontWeight: 'bold',
-                cursor: 'pointer'
+              onMouseLeave={(e) => {
+                if (selectedDino?.id !== dino.id) {
+                  e.currentTarget.style.borderColor = 'rgba(0, 255, 136, 0.3)';
+                  e.currentTarget.style.boxShadow = '0 10px 40px rgba(0, 0, 0, 0.3)';
+                }
               }}
             >
-              Mint NFT
+              <div style={{ fontSize: '80px', marginBottom: '15px', filter: 'drop-shadow(0 0 20px rgba(0, 255, 136, 0.3))' }}>
+                {dino.id === 1 ? '🦖' : dino.id === 2 ? '🦕' : '🦏'}
+              </div>
+              <h3 style={{ color: '#fff', fontSize: '22px', marginBottom: '10px', fontWeight: 'bold' }}>{dino.name}</h3>
+              <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '15px' }}>
+                <span style={{ color: '#00ff88', fontSize: '14px', fontWeight: '600', textTransform: 'uppercase', letterSpacing: '1px' }}>{dino.rarity}</span>
+                <span style={{ color: '#ffaa00', fontSize: '16px', fontWeight: 'bold' }}>{dino.price}</span>
+              </div>
+              <div style={{ fontSize: '12px', color: 'rgba(255, 255, 255, 0.6)' }}>Click to select & mint</div>
+            </div>
+          ))}
+        </div>
+
+        {/* Mint Section */}
+        {selectedDino && (
+          <div style={{
+            background: 'linear-gradient(135deg, rgba(0, 255, 136, 0.1) 0%, rgba(15, 52, 96, 0.3) 100%)',
+            border: '2px solid rgba(0, 255, 136, 0.4)',
+            borderRadius: '25px',
+            padding: '50px',
+            backdropFilter: 'blur(30px)',
+            textAlign: 'center',
+            boxShadow: '0 20px 60px rgba(0, 255, 136, 0.2)',
+          }}>
+            <h2 style={{ color: '#fff', fontSize: '32px', marginBottom: '20px', fontWeight: 'bold' }}>READY TO MINT YOUR {selectedDino.name.toUpperCase()}?</h2>
+            <p style={{ color: 'rgba(255, 255, 255, 0.7)', fontSize: '16px', marginBottom: '30px' }}>Cost: <span style={{ color: '#ffaa00', fontWeight: 'bold' }}>{selectedDino.price}</span></p>
+            
+            <button
+              onClick={handleMint}
+              disabled={isMinting}
+              style={{
+                background: isMinting ? 'rgba(100, 100, 100, 0.5)' : 'linear-gradient(135deg, #00ff88 0%, #00cc6f 100%)',
+                color: '#000',
+                border: 'none',
+                borderRadius: '15px',
+                padding: '20px 60px',
+                fontSize: '18px',
+                fontWeight: 'bold',
+                cursor: isMinting ? 'not-allowed' : 'pointer',
+                transition: 'all 0.3s ease',
+                boxShadow: isMinting ? 'none' : '0 10px 40px rgba(0, 255, 136, 0.4)',
+                transform: isMinting ? 'scale(1)' : 'scale(1)',
+                textTransform: 'uppercase',
+                letterSpacing: '2px',
+              }}
+              onMouseEnter={(e) => {
+                if (!isMinting) {
+                  e.currentTarget.style.transform = 'scale(1.05)';
+                  e.currentTarget.style.boxShadow = '0 15px 50px rgba(0, 255, 136, 0.6)';
+                }
+              }}
+              onMouseLeave={(e) => {
+                if (!isMinting) {
+                  e.currentTarget.style.transform = 'scale(1)';
+                  e.currentTarget.style.boxShadow = '0 10px 40px rgba(0, 255, 136, 0.4)';
+                }
+              }}
+            >
+              {isMinting ? '⏳ MINTING...' : '🚀 MINT NOW'}
+            </button>
+
+            <button
+              onClick={() => setSelectedDino(null)}
+              style={{
+                background: 'transparent',
+                color: 'rgba(255, 255, 255, 0.7)',
+                border: '1px solid rgba(255, 255, 255, 0.3)',
+                borderRadius: '10px',
+                padding: '12px 30px',
+                fontSize: '14px',
+                cursor: 'pointer',
+                marginLeft: '15px',
+                transition: 'all 0.3s ease',
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.6)';
+                e.currentTarget.style.color = '#fff';
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.3)';
+                e.currentTarget.style.color = 'rgba(255, 255, 255, 0.7)';
+              }}
+            >
+              Cancel
             </button>
           </div>
-        );
-      case 'market':
-        return (
-          <div>
-            <h2 style={{ fontSize: '28px', marginBottom: '20px' }}>📊 Market</h2>
-            <p>NFT Marketplace coming soon!</p>
-            <p style={{ marginTop: '20px', opacity: 0.8 }}>Browse and trade NFTs on Linera blockchain</p>
-          </div>
-        );
-      case 'predict':
-        return (
-          <div>
-            <h2 style={{ fontSize: '28px', marginBottom: '20px' }}>🎯 Predict</h2>
-            <p>Prediction Markets coming soon!</p>
-            <p style={{ marginTop: '20px', opacity: 0.8 }}>Predict NFT trends and earn rewards</p>
-          </div>
-        );
-      case 'create':
-        return (
-          <div>
-            <h2 style={{ fontSize: '28px', marginBottom: '20px' }}>🎮 Create</h2>
-            <p>Custom NFT Creation coming soon!</p>
-            <p style={{ marginTop: '20px', opacity: 0.8 }}>Create your own NFT collections</p>
-          </div>
-        );
-      default:
-        return (
-          <div>
-            <h2 style={{ fontSize: '32px', marginBottom: '30px' }}>Welcome</h2>
-            {isConnected ? (
-              <p style={{ marginBottom: '20px', color: '#00ff88' }}>✓ Wallet Connected: {address?.substring(0, 10)}...</p>
-            ) : (
-              <p style={{ marginBottom: '20px', color: '#ffaa00' }}>⚠ Please connect your wallet to continue</p>
-            )}
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '15px', marginBottom: '30px' }}>
-              <button
-                onClick={handleMint}
-                style={{
-                  padding: '15px 20px',
-                  fontSize: '16px',
-                  background: '#00d4ff',
-                  border: 'none',
-                  borderRadius: '10px',
-                  color: '#000',
-                  fontWeight: 'bold',
-                  cursor: 'pointer',
-                  transition: 'transform 0.2s'
-                }}
-                onMouseEnter={(e) => (e.currentTarget.style.transform = 'scale(1.05)')}
-                onMouseLeave={(e) => (e.currentTarget.style.transform = 'scale(1)')}
-              >
-                🎨 Mint NFT
-              </button>
-              <button
-                onClick={() => setActiveTab('market')}
-                style={{
-                  padding: '15px 20px',
-                  fontSize: '16px',
-                  background: '#00ff88',
-                  border: 'none',
-                  borderRadius: '10px',
-                  color: '#000',
-                  fontWeight: 'bold',
-                  cursor: 'pointer'
-                }}
-                onMouseEnter={(e) => (e.currentTarget.style.transform = 'scale(1.05)')}
-                onMouseLeave={(e) => (e.currentTarget.style.transform = 'scale(1)')}
-              >
-                📊 Market
-              </button>
-              <button
-                onClick={() => setActiveTab('predict')}
-                style={{
-                  padding: '15px 20px',
-                  fontSize: '16px',
-                  background: '#ff6b6b',
-                  border: 'none',
-                  borderRadius: '10px',
-                  color: '#fff',
-                  fontWeight: 'bold',
-                  cursor: 'pointer'
-                }}
-                onMouseEnter={(e) => (e.currentTarget.style.transform = 'scale(1.05)')}
-                onMouseLeave={(e) => (e.currentTarget.style.transform = 'scale(1)')}
-              >
-                🎯 Predict
-              </button>
-              <button
-                onClick={() => setActiveTab('create')}
-                style={{
-                  padding: '15px 20px',
-                  fontSize: '16px',
-                  background: '#ffa500',
-                  border: 'none',
-                  borderRadius: '10px',
-                  color: '#000',
-                  fontWeight: 'bold',
-                  cursor: 'pointer'
-                }}
-                onMouseEnter={(e) => (e.currentTarget.style.transform = 'scale(1.05)')}
-                onMouseLeave={(e) => (e.currentTarget.style.transform = 'scale(1)')}
-              >
-                🎮 Create
-              </button>
-            </div>
-            <p style={{ fontSize: '14px', opacity: 0.8 }}>Coming soon: Real-time trading, predictions, and custom NFT creation</p>
-          </div>
-        );
-    }
-  };
+        )}
+      </div>
+    </div>
+  );
+};
+
+export default function Home() {
+  const [activeTab, setActiveTab] = useState<string>('dinos');
+  const { address, isConnected, connect } = useWallet();
 
   return (
     <div style={{
       minHeight: '100vh',
-      background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-      display: 'flex',
-      flexDirection: 'column',
-      alignItems: 'center',
-      justifyContent: 'center',
-      color: 'white',
-      fontFamily: 'system-ui, -apple-system, sans-serif',
-      padding: '20px'
+      background: activeTab === 'dinos' 
+        ? 'linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%)'
+        : 'linear-gradient(135deg, #0f3460 0%, #16213e 50%, #1a1a2e 100%)',
+      color: '#fff',
+      fontFamily: '"SF Pro Display", -apple-system, system-ui, sans-serif',
     }}>
-      <h1 style={{ fontSize: '48px', marginBottom: '20px' }}>⚡ Linera NFT Hub</h1>
-      <p style={{ fontSize: '24px', marginBottom: '40px' }}>Real-Time NFT Ecosystem</p>
-
-      {isConnected && activeTab !== 'home' && (
-        <button
-          onClick={() => setActiveTab('home')}
-          style={{
-            position: 'absolute',
-            top: '20px',
-            left: '20px',
-            padding: '10px 20px',
-            background: 'rgba(255, 255, 255, 0.2)',
-            border: 'none',
-            borderRadius: '5px',
-            color: 'white',
-            cursor: 'pointer',
-            fontSize: '14px'
-          }}
-        >
-          ← Back to Home
-        </button>
+      {/* Navigation Header */}
+      {activeTab !== 'dinos' && (
+        <div style={{
+          padding: '20px 40px',
+          borderBottom: '1px solid rgba(0, 255, 136, 0.2)',
+          backdropFilter: 'blur(10px)',
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+        }}>
+          <h1 style={{ fontSize: '24px', fontWeight: 'bold', margin: 0 }}>⚡ Linera NFT Hub</h1>
+          <button
+            onClick={() => setActiveTab('dinos')}
+            style={{
+              background: 'rgba(0, 255, 136, 0.2)',
+              border: '1px solid rgba(0, 255, 136, 0.4)',
+              color: '#00ff88',
+              padding: '10px 20px',
+              borderRadius: '10px',
+              cursor: 'pointer',
+              fontSize: '14px',
+            }}
+          >
+            ← Back to Dinosaurs
+          </button>
+        </div>
       )}
 
-      <div style={{
-        background: 'rgba(255, 255, 255, 0.1)',
-        padding: '40px',
-        borderRadius: '20px',
-        backdropFilter: 'blur(10px)',
-        textAlign: 'center',
-        maxWidth: '600px',
-        width: '100%'
-      }}>
-        {renderContent()}
-      </div>
+      {/* Main Content */}
+      {activeTab === 'dinos' ? (
+        <DinosaurNFTMinter />
+      ) : (
+        <div style={{ padding: '60px 40px', maxWidth: '1000px', margin: '0 auto' }}>
+          <h2 style={{ fontSize: '48px', marginBottom: '30px', textAlign: 'center' }}>Coming Soon</h2>
+          <p style={{ fontSize: '18px', color: 'rgba(255, 255, 255, 0.7)', textAlign: 'center' }}>More features coming to Linera NFT Hub</p>
+        </div>
+      )}
     </div>
   );
 }
